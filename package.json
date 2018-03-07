@@ -1,0 +1,16 @@
+{ 
+  "name": "act-file-upload",
+  "version": "1.0.0",
+  "description": "Apify act for MAVIMI",
+  "main": "main.js",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cermak-petr/act-file-upload"
+  },
+  "dependencies": { 
+    "apify": "^0.5.9",
+    "lodash": "^4.17.5",
+    "request-promise": "^4.2.2"
+  }
+}
