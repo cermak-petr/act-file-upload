@@ -89,25 +89,25 @@ async function sendForm(result, fileData, page){
     
     await page.goto(url);
     await page.waitForSelector('#sendApply');
-    const cookie = await page.evaluate(() => document.cookie);
-    console.log(cookie);
+
+    await page.evaluate((formData) => {
+        document.querySelector('#jobad_application_coverLetter').value = formData['jobad_application[coverLetter]'];
+        document.querySelector('#jobad_application_firstName').value = formData['jobad_application[firstName]'];
+        document.querySelector('#jobad_application_surname').value = formData['jobad_application[surname]'];
+        document.querySelector('#jobad_application_email').value = formData['jobad_application[email]'];
+        document.querySelector('#jobad_application_phone').value = formData['jobad_application[phone]'];
+    }, FORM_DATA);
     
-    const formData = _.clone(FORM_DATA);
-    formData['jobad_application[_token]'] = token[1];
-    /*formData['jobad_application[fileFirst]'] = {
-        value: fileData,
-        options: {
-            filename: 'CV Mavimi.pdf',
-            contentType: 'application/pdf'
-        }
-    };*/
+    const fileInput = await page.$('#jobad_application_fileFirst');
+    await fileInput.uploadFile('./CV_Mavimi.pdf');
     
-    return await request({
-        uri: url,
-        method: 'POST',
-        formData: formData,
-        headers: {'Cookie': cookie}
+    await page.evaluate(() => {
+        document.querySelector('#sendApply').click();
     });
+    
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    
+    return null;
 }
 
 function createKey(companyName){
@@ -163,7 +163,11 @@ Apify.main(async () => {
     
     try{
         const resp = await sendForm({offerId: '1272508170'}, pdfData, page);
-        await Apify.setValue('response.html', resp, {contentType: 'text/html'});
+        //await Apify.setValue('response.html', resp, {contentType: 'text/html'});
+        
+        console.log('Saving screenshot 1...');
+        const screenshotBuffer1 = await page.screenshot();
+        await Apify.setValue('screenshot_1.png', screenshotBuffer1, { contentType: 'image/png' });
     }
     catch(e){console.log(e);}
     
