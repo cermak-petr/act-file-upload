@@ -15,4 +15,4 @@ RUN npm install --quiet --only=prod --no-optional \
  && npm list
 
 # Define that start command
-CMD [ "node", "act-in-gist-example.js" ]
+CMD [ "node", "main.js" ]
